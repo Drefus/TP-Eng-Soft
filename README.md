@@ -122,6 +122,60 @@ Admin --> UpdateResult[Atualizar resultados]
 Admin --> DefineQualified[Definir classificados]
 ```
 
+### 📝 Descrição dos Cenários de Casos de Uso
+
+Abaixo estão os cenários detalhados para todos os casos de uso do sistema, integrando as funcionalidades de consulta e os controles administrativos:
+
+#### **Atores do Usuário (Consulta)**
+
+* **UC01: Visualizar tabela de jogos (RF01)**:
+    * **Ator**: Usuário.
+    * **Fluxo Principal**: O sistema exibe a tabela completa com data, horário e local de cada partida.
+    * **Pós-condição**: O usuário visualiza o cronograma oficial do evento.
+
+* **UC02: Filtrar partidas (RF05)**:
+    * **Ator**: Usuário.
+    * **Fluxo Principal**: O usuário seleciona critérios de busca por data, seleção específica ou cidade-sede.
+    * **Pós-condição**: O sistema apresenta apenas os jogos que correspondem aos filtros aplicados.
+
+* **UC03: Consultar seleções (RF03)**:
+    * **Ator**: Usuário.
+    * **Fluxo Principal**: O sistema gera uma lista de todas as seleções participantes e suas informações básicas.
+    * **Pós-condição**: O usuário acessa os dados das equipes que disputam o torneio.
+
+* **UC04: Consultar cidades-sede (RF02)**:
+    * **Ator**: Usuário.
+    * **Fluxo Principal**: O sistema exibe um guia da sede selecionada, incluindo estádio, aeroportos próximos e rede hoteleira.
+    * **Pós-condição**: O usuário obtém as informações logísticas necessárias para o deslocamento nas sedes.
+
+* **UC05: Visualizar chaveamento (RF04)**:
+    * **Ator**: Usuário[cite: 15, 150].
+    * **Fluxo Principal**: O sistema apresenta graficamente a estrutura das fases eliminatórias e os cruzamentos futuros.
+    * **Pós-condição**: O usuário compreende o caminho das equipes até a final.
+
+* **UC06: Ver detalhes da partida (RF08)**:
+    * **Ator**: Usuário.
+    * **Fluxo Principal**: Ao clicar em um jogo específico, o sistema detalha estatísticas e informações extras da partida.
+    * **Pós-condição**: O usuário acessa a ficha técnica completa do confronto.
+
+#### **Atores do Administrador (Gestão)**
+
+* **UC07: Autenticar (RNF03)**:
+    * **Ator**: Administrador.
+    * **Fluxo Principal**: O administrador insere login e senha na área restrita.
+    * **Pós-condição**: O acesso às funções de edição é liberado mediante validação de segurança.
+
+* **UC08: Atualizar resultados (RF06)**:
+    * **Ator**: Administrador.
+    * **Pré-condição**: O administrador deve estar devidamente autenticado.
+    * **Fluxo Principal**: O administrador insere os placares das partidas encerradas no sistema.
+    * **Pós-condição**: Os dados são salvos e atualizados em tempo real na tabela pública.
+
+* **UC09: Definir classificados (RF06)**:
+    * **Ator**: Administrador.
+    * **Fluxo Principal**: O administrador confirma quais seleções avançam para as próximas fases com base nos resultados.
+    * **Pós-condição**: O gráfico de chaveamento é reordenado com as seleções vitoriosas.
+
 ------------------------------------------------------------------------
 
 ## 🧠 Diagrama de Classes
