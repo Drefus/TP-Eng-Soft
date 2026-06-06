@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head th:replace="~{fragments/layout :: head('Chaveamento')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<main>
+    <div class="container">
+        <div class="page-header" style="text-align: center;">
+            <h1>📊 Chaveamento Eliminatório</h1>
+            <p class="description">Acompanhe o caminho das seleções até a grande final.</p>
+        </div>
+
+        <!-- Bracket Visual -->
+        <div class="bracket-container">
+            <div class="bracket">
+                <div th:each="entry : ${fases}" class="bracket-round">
+                    <h3 class="bracket-round-title" th:text="${entry.key}">Fase</h3>
+
+                    <div th:each="chave : ${entry.value}" class="bracket-match">
+                        <div th:if="${chave.partida != null}">
+                            <!-- Time 1 -->
+                            <div class="bracket-team"
+                                 th:classappend="${chave.partida.finalizada and chave.partida.golsTime1 != null and chave.partida.golsTime2 != null and chave.partida.golsTime1 > chave.partida.golsTime2 ? 'winner' : ''}">
+                                <div class="bracket-team-info">
+                                    <span class="flag" th:text="${chave.partida.time1.bandeira}">🏳️</span>
+                                    <span th:text="${chave.partida.time1.nome}">Time 1</span>
+                                </div>
+                                <span class="bracket-team-score"
+                                      th:text="${chave.partida.golsTime1 != null ? chave.partida.golsTime1 : '-'}">-</span>
+                            </div>
+                            <!-- Time 2 -->
+                            <div class="bracket-team"
+                                 th:classappend="${chave.partida.finalizada and chave.partida.golsTime1 != null and chave.partida.golsTime2 != null and chave.partida.golsTime2 > chave.partida.golsTime1 ? 'winner' : ''}">
+                                <div class="bracket-team-info">
+                                    <span class="flag" th:text="${chave.partida.time2.bandeira}">🏳️</span>
+                                    <span th:text="${chave.partida.time2.nome}">Time 2</span>
+                                </div>
+                                <span class="bracket-team-score"
+                                      th:text="${chave.partida.golsTime2 != null ? chave.partida.golsTime2 : '-'}">-</span>
+                            </div>
+                        </div>
+                        <div th:unless="${chave.partida != null}" class="bracket-team" style="padding: 1.5rem; text-align: center;">
+                            <span class="text-muted">A definir</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Legend -->
+        <div style="display: flex; justify-content: center; gap: 2rem; margin-top: var(--space-xl); flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--text-muted);">
+                <div style="width: 12px; height: 12px; border-radius: 3px; background: rgba(16, 185, 129, 0.3);"></div>
+                <span>Vencedor</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--text-muted);">
+                <div style="width: 12px; height: 12px; border-radius: 3px; background: var(--bg-card); border: 1px solid var(--border-color);"></div>
+                <span>A disputar</span>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<script src="/js/app.js"></script>
+</body>
+</html>
