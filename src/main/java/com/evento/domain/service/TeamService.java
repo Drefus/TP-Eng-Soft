@@ -21,6 +21,12 @@ public class TeamService {
                 .collect(Collectors.toList());
     }
 
+    public List<Selecao> listarTodasSelecoes() {
+        return selecaoRepository.findAll().stream()
+                .sorted(Comparator.comparing(Selecao::getNome))
+                .collect(Collectors.toList());
+    }
+
     public Optional<Selecao> buscarSelecao(Long id) {
         return selecaoRepository.findById(id);
     }

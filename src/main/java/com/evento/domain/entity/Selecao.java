@@ -1,8 +1,6 @@
 package com.evento.domain.entity;
 
 import jakarta.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "selecoes")
@@ -31,7 +29,8 @@ public class Selecao {
     private int golsPro = 0;
     private int golsContra = 0;
 
-    public Selecao() {}
+    public Selecao() {
+    }
 
     public Selecao(String nome, String grupo, String tecnico, String bandeira, String codigoPais) {
         this.nome = nome;
@@ -51,39 +50,99 @@ public class Selecao {
     }
 
     // Getters and Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getNome() { return nome; }
-    public void setNome(String nome) { this.nome = nome; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getGrupo() { return grupo; }
-    public void setGrupo(String grupo) { this.grupo = grupo; }
+    public String getNome() {
+        return nome;
+    }
 
-    public String getTecnico() { return tecnico; }
-    public void setTecnico(String tecnico) { this.tecnico = tecnico; }
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
 
-    public String getBandeira() { return bandeira; }
-    public void setBandeira(String bandeira) { this.bandeira = bandeira; }
+    public String getGrupo() {
+        return grupo;
+    }
 
-    public String getCodigoPais() { return codigoPais; }
-    public void setCodigoPais(String codigoPais) { this.codigoPais = codigoPais; }
+    public void setGrupo(String grupo) {
+        this.grupo = grupo;
+    }
 
-    public int getPontos() { return pontos; }
-    public void setPontos(int pontos) { this.pontos = pontos; }
+    public String getTecnico() {
+        return tecnico;
+    }
 
-    public int getVitorias() { return vitorias; }
-    public void setVitorias(int vitorias) { this.vitorias = vitorias; }
+    public void setTecnico(String tecnico) {
+        this.tecnico = tecnico;
+    }
 
-    public int getEmpates() { return empates; }
-    public void setEmpates(int empates) { this.empates = empates; }
+    public String getBandeira() {
+        return bandeira;
+    }
 
-    public int getDerrotas() { return derrotas; }
-    public void setDerrotas(int derrotas) { this.derrotas = derrotas; }
+    public void setBandeira(String bandeira) {
+        this.bandeira = bandeira;
+    }
 
-    public int getGolsPro() { return golsPro; }
-    public void setGolsPro(int golsPro) { this.golsPro = golsPro; }
+    public String getCodigoPais() {
+        return codigoPais;
+    }
 
-    public int getGolsContra() { return golsContra; }
-    public void setGolsContra(int golsContra) { this.golsContra = golsContra; }
+    public void setCodigoPais(String codigoPais) {
+        this.codigoPais = codigoPais;
+    }
+
+    public int getPontos() {
+        return pontos;
+    }
+
+    public void setPontos(int pontos) {
+        this.pontos = pontos;
+    }
+
+    public int getVitorias() {
+        return vitorias;
+    }
+
+    public void setVitorias(int vitorias) {
+        this.vitorias = vitorias;
+    }
+
+    public int getEmpates() {
+        return empates;
+    }
+
+    public void setEmpates(int empates) {
+        this.empates = empates;
+    }
+
+    public int getDerrotas() {
+        return derrotas;
+    }
+
+    public void setDerrotas(int derrotas) {
+        this.derrotas = derrotas;
+    }
+
+    public int getGolsPro() {
+        return golsPro;
+    }
+
+    public void setGolsPro(int golsPro) {
+        this.golsPro = golsPro;
+    }
+
+    public int getGolsContra() {
+        return golsContra;
+    }
+
+    public void setGolsContra(int golsContra) {
+        this.golsContra = golsContra;
+    }
 }

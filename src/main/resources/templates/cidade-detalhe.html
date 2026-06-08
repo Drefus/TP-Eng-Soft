@@ -52,7 +52,7 @@
                         <h4 th:text="${hotel.nome}" style="margin-bottom: 0.5rem;">Hotel</h4>
                         <div style="margin-bottom: 0.5rem;">
                             <span th:each="i : ${#numbers.sequence(1, hotel.estrelas)}" style="color: #fbbf24;">★</span>
-                            <span th:each="i : ${#numbers.sequence(hotel.estrelas + 1, 5)}" style="color: var(--text-muted);">★</span>
+                            <span th:if="${hotel.estrelas < 5}" th:each="i : ${#numbers.sequence(hotel.estrelas + 1, 5)}" style="color: var(--text-muted);">★</span>
                         </div>
                         <p class="text-muted" th:if="${hotel.endereco != null}" style="font-size: 0.85rem;">
                             📍 <span th:text="${hotel.endereco}">Endereço</span>
@@ -110,7 +110,34 @@
             </div>
         </section>
 
-        <div class="mt-2" style="text-align: center;">
+        <!-- Bloco de Edição Admin -->
+        <div sec:authorize="hasRole('ADMIN')" class="card mt-3" style="border: 1px solid var(--accent); background: rgba(37, 99, 235, 0.05);">
+            <div class="card-body">
+                <h3 style="margin-bottom: 1rem; color: var(--accent); display: flex; align-items: center; gap: 0.5rem;">
+                    ⚙️ Editar Informações (Admin)
+                </h3>
+                <form th:action="@{/admin/cidade/editar}" method="post" style="display: flex; flex-direction: column; gap: 1rem;">
+                    <input type="hidden" name="cidadeId" th:value="${cidade.id}">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                    
+                    <div>
+                        <label style="display: block; font-weight: 500; margin-bottom: 0.5rem;">Descrição da Cidade</label>
+                        <textarea name="descricaoCidade" rows="3" style="width: 100%; padding: 0.5rem; border-radius: var(--radius-md); border: 1px solid var(--border);" th:text="${cidade.descricao}"></textarea>
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; font-weight: 500; margin-bottom: 0.5rem;">Capacidade do Estádio</label>
+                        <input type="number" name="capacidadeEstadio" min="1" style="width: 100%; max-width: 200px; padding: 0.5rem; border-radius: var(--radius-md); border: 1px solid var(--border);" th:value="${cidade.estadio.capacidade}">
+                    </div>
+                    
+                    <div>
+                        <button type="submit" class="btn btn-primary">💾 Salvar Alterações</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="mt-3" style="text-align: center;">
             <a href="/cidades" class="btn btn-outline">← Voltar às cidades</a>
         </div>
     </div>

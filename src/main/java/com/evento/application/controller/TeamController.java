@@ -26,7 +26,7 @@ public class TeamController {
     public String listar(Model model) {
         Map<String, List<Selecao>> grupos = teamService.listarPorGrupos();
         model.addAttribute("grupos", grupos);
-        model.addAttribute("selecoes", teamService.listarSelecoes());
+        model.addAttribute("selecoes", teamService.listarTodasSelecoes());
         return "selecoes";
     }
 

@@ -16,7 +16,9 @@
             </div>
             <div style="display: flex; gap: 0.75rem; align-items: center;">
                 <span class="badge">🟢 Autenticado</span>
-                <a href="/logout" class="btn btn-outline btn-sm">🚪 Sair</a>
+                <form th:action="@{/logout}" method="post" style="margin: 0;">
+                    <button type="submit" class="btn btn-outline btn-sm">🚪 Sair</button>
+                </form>
             </div>
         </div>
 

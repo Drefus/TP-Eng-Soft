@@ -22,4 +22,16 @@ public class CityService {
     public Optional<CidadeSede> buscarCidade(Long id) {
         return cidadeSedeRepository.findById(id);
     }
+
+    public void atualizarDetalhes(Long cidadeId, String descricao, Integer capacidadeEstadio) {
+        cidadeSedeRepository.findById(cidadeId).ifPresent(cidade -> {
+            if (descricao != null) {
+                cidade.setDescricao(descricao);
+            }
+            if (cidade.getEstadio() != null && capacidadeEstadio != null && capacidadeEstadio > 0) {
+                cidade.getEstadio().setCapacidade(capacidadeEstadio);
+            }
+            cidadeSedeRepository.save(cidade);
+        });
+    }
 }

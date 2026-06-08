@@ -1,6 +1,5 @@
 package com.evento.application.controller;
 
-import com.evento.domain.entity.Partida;
 import com.evento.domain.service.GameService;
 import com.evento.domain.service.TeamService;
 import com.evento.domain.service.CityService;
@@ -33,7 +32,7 @@ public class AdminController {
     @GetMapping("/admin")
     public String admin(Model model) {
         model.addAttribute("partidas", gameService.listarPartidas());
-        model.addAttribute("selecoes", teamService.listarSelecoes());
+        model.addAttribute("selecoes", teamService.listarTodasSelecoes());
         return "admin";
     }
 
@@ -47,8 +46,22 @@ public class AdminController {
             gameService.atualizarResultado(partidaId, golsTime1, golsTime2);
             redirectAttributes.addFlashAttribute("successMsg", "Resultado atualizado com sucesso!");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMsg", "Erro ao atualizar: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMsg", "Erro ao atualizar resultado: " + e.getMessage());
         }
         return "redirect:/admin";
+    }
+
+    @PostMapping("/admin/cidade/editar")
+    public String editarCidade(@RequestParam Long cidadeId,
+                               @RequestParam(required = false) String descricaoCidade,
+                               @RequestParam(required = false) Integer capacidadeEstadio,
+                               RedirectAttributes redirectAttributes) {
+        try {
+            cityService.atualizarDetalhes(cidadeId, descricaoCidade, capacidadeEstadio);
+            redirectAttributes.addFlashAttribute("successMsg", "Detalhes da cidade e estádio atualizados!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMsg", "Erro ao atualizar dados: " + e.getMessage());
+        }
+        return "redirect:/cidades/" + cidadeId;
     }
 }
