@@ -7,11 +7,6 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api':    { target: 'http://localhost:8080', changeOrigin: true },
-      '/login':  { target: 'http://localhost:8080', changeOrigin: true },
-      '/logout': { target: 'http://localhost:8080', changeOrigin: true },
-      '/admin':  { target: 'http://localhost:8080', changeOrigin: true },
-      // Proxy do CSS legado (usado apenas em dev se necessário)
-      '/css':    { target: 'http://localhost:8080', changeOrigin: true },
     },
   },
   build: {

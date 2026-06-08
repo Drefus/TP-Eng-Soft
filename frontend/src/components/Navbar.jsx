@@ -33,7 +33,7 @@ export default function Navbar() {
             </li>
           ))}
           <li>
-            <a href="/admin" className="nav-admin">⚙️ Admin</a>
+            <NavLink to="/login" className="nav-admin">⚙️ Admin</NavLink>
           </li>
         </ul>
       </div>
