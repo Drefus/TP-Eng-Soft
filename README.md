@@ -7,6 +7,73 @@ funcionais definidos na especificação do projeto.
 
 ------------------------------------------------------------------------
 
+## 🚀 Como Rodar o Projeto
+
+### Pré-requisitos
+
+| Ferramenta | Versão mínima | Obrigatório? | Observação |
+|---|---|---|---|
+| **JDK (Java)** | 21 | ✅ Sim 
+| **Git** | Qualquer | ✅ Sim | Para clonar o repositório |
+| **Maven** | 3.9+ | ❌ Não | Já incluído no projeto via Maven Wrapper (`mvnw`) |
+
+### Instalando o JDK 21
+
+**Windows:**
+1. baixe o JDK 21.
+2. Execute o instalador e **marque a opção "Set JAVA_HOME variable"**.
+
+**Linux (Ubuntu/Debian):**
+```bash
+sudo apt update && sudo apt install openjdk-21-jdk
+```
+
+**Mac:**
+```bash
+brew install openjdk@21
+```
+
+**Verificar instalação:**
+```bash
+java -version
+```
+> Deve exibir algo como `openjdk version "21.x.x"`.
+
+### Clonando e Executando
+
+```bash
+# 1. Clonar o repositório
+git clone https://github.com/cordeirolucass/TP-Eng-Soft.git
+cd TP-Eng-Soft
+
+# 2. Rodar os testes
+./mvnw test              # Linux/Mac
+.\mvnw.cmd test           # Windows
+
+# 3. Iniciar a aplicação
+./mvnw spring-boot:run              # Linux/Mac
+.\mvnw.cmd spring-boot:run           # Windows
+```
+
+Após iniciar, acesse no navegador: **http://localhost:8080**
+
+### Credenciais de Administrador
+
+| Campo | Valor |
+|---|---|
+| Usuário | `admin` |
+| Senha | `admin123` |
+
+Acesse a área administrativa em: **http://localhost:8080/login**
+
+### Observações
+
+- O **banco de dados H2** roda em memória e é populado automaticamente a cada inicialização. Não é necessário instalar nenhum banco.
+- As **partidas são sincronizadas** automaticamente com a API da Copa do Mundo 2026 nos primeiros segundos após o início. Aguarde alguns segundos e recarregue a página.
+- O Maven **não precisa ser instalado**: o projeto usa o Maven Wrapper (`mvnw`), que baixa o Maven automaticamente na primeira execução.
+
+------------------------------------------------------------------------
+
 ## 🏗️ Projeto Arquitetural --- Diagrama de Componentes
 
 ### 📌 Decisão de Arquitetura

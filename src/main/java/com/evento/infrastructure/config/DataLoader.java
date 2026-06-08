@@ -1,6 +1,5 @@
 package com.evento.infrastructure.config;
 
-import com.evento.domain.entity.Administrador;
 import com.evento.infrastructure.repository.UsuarioRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
