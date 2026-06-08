@@ -1,0 +1,3 @@
+/* O design system vem do style.css — importado diretamente pelo Vite */
+@import './style.css';
+@import './App.css';

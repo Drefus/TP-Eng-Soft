@@ -1,7 +1,9 @@
 package com.evento.infrastructure.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class WorldCupApiResponse {
     private List<WorldCupGameDto> games;
 

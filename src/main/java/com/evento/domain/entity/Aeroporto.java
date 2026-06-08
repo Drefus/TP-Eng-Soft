@@ -1,5 +1,6 @@
 package com.evento.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -16,6 +17,7 @@ public class Aeroporto {
     @Column(length = 3)
     private String codigo; // IATA code
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cidade_id")
     private CidadeSede cidade;

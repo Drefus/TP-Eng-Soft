@@ -12,6 +12,8 @@ import com.evento.infrastructure.repository.SelecaoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -22,7 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class WorldCupApiSyncService {
+public class WorldCupApiSyncService implements ApplicationRunner {
 
     private static final Logger log = LoggerFactory.getLogger(WorldCupApiSyncService.class);
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm");
@@ -32,7 +34,7 @@ public class WorldCupApiSyncService {
     private final SelecaoRepository selecaoRepository;
     private final GameService gameService;
     private final CidadeSedeRepository cidadeSedeRepository;
-    
+
     private List<CidadeSede> todasAsCidades;
 
     @Value("${api.worldcup.url}")
@@ -48,14 +50,18 @@ public class WorldCupApiSyncService {
         this.cidadeSedeRepository = cidadeSedeRepository;
     }
 
-    @Scheduled(fixedRate = 900000)
-    public void syncMatches() {
-        log.info("Starting auto-import synchronization with worldcup26.ir API...");
+    /** Roda imediatamente após o startup do Spring Boot */
+    @Override
+    public void run(ApplicationArguments args) {
+        syncMatches();
+    }
 
+    /** Reexecuta a cada 15 minutos para manter os dados atualizados */
+    @Scheduled(fixedRate = 900000, initialDelay = 900000)
+    public void syncMatches() {
+        log.info("Iniciando sincronização com a API worldcup26.ir...");
         try {
-            if (todasAsCidades == null || todasAsCidades.isEmpty()) {
-                todasAsCidades = cidadeSedeRepository.findAll();
-            }
+            todasAsCidades = cidadeSedeRepository.findAll();
 
             WorldCupApiResponse response = restTemplate.getForObject(apiUrl, WorldCupApiResponse.class);
 
@@ -64,11 +70,12 @@ public class WorldCupApiSyncService {
                 for (WorldCupGameDto apiMatch : matches) {
                     processMatch(apiMatch);
                 }
-                log.info("Auto-import completed successfully. Processed {} matches.", matches.size());
+                log.info("Sincronização concluída. {} partidas processadas.", matches.size());
+            } else {
+                log.warn("A API não retornou dados.");
             }
-
         } catch (Exception e) {
-            log.error("Error during API synchronization: ", e);
+            log.error("Erro durante sincronização com a API: {}", e.getMessage());
         }
     }
 
@@ -147,19 +154,21 @@ public class WorldCupApiSyncService {
     private Selecao getOrCreateTeam(String name, String groupLabel) {
         Optional<Selecao> opt = selecaoRepository.findByNome(name);
         if (opt.isPresent()) {
-            return opt.get();
+            // Enriquecer com bandeira se ainda não tiver
+            Selecao existente = opt.get();
+            if (existente.getBandeira() == null || existente.getBandeira().isEmpty()) {
+                enrichWithCountryData(existente, name);
+                selecaoRepository.save(existente);
+            }
+            return existente;
         }
 
         Selecao s = new Selecao();
         s.setNome(name);
-        // If it's a "TBD" or "Winner", don't assign a group to avoid cluttering the
-        // group stage tables
         if (name.startsWith("Winner") || name.startsWith("Runner") || name.startsWith("Loser") || name.equals("TBD")
                 || name.startsWith("3rd")) {
             s.setGrupo("??");
         } else {
-            // "group" in API could be "A", "B", etc. Only use first letter if it's a group
-            // stage.
             s.setGrupo(groupLabel != null && groupLabel.length() == 1 ? groupLabel : "?");
         }
 
@@ -169,6 +178,9 @@ public class WorldCupApiSyncService {
         s.setDerrotas(0);
         s.setGolsPro(0);
         s.setGolsContra(0);
+
+        // Buscar bandeira e código do país
+        enrichWithCountryData(s, name);
 
         return selecaoRepository.save(s);
     }
@@ -214,6 +226,51 @@ public class WorldCupApiSyncService {
         } catch (NumberFormatException e) {
             log.warn("Invalid score format for match {}: home={}, away={}",
                     apiMatch.getId(), apiMatch.getHomeScore(), apiMatch.getAwayScore());
+        }
+    }
+
+    /**
+     * Busca bandeira (emoji) e código ISO do país via RestCountries API.
+     * Falha silenciosamente se o país não for encontrado.
+     */
+    @SuppressWarnings("unchecked")
+    private void enrichWithCountryData(Selecao selecao, String countryName) {
+        // Não buscar para times "virtuais" (Winner Group A, etc.)
+        if (countryName.startsWith("Winner") || countryName.startsWith("Runner")
+                || countryName.startsWith("Loser") || countryName.startsWith("3rd")
+                || countryName.equals("TBD")) {
+            return;
+        }
+
+        try {
+            String url = "https://restcountries.com/v3.1/name/" + countryName + "?fields=flag,cca2&fullText=true";
+            Object[] response = restTemplate.getForObject(url, Object[].class);
+
+            if (response != null && response.length > 0) {
+                java.util.Map<String, Object> country = (java.util.Map<String, Object>) response[0];
+                String flag = (String) country.get("flag");
+                String cca2 = (String) country.get("cca2");
+
+                if (flag != null) selecao.setBandeira(flag);
+                if (cca2 != null) selecao.setCodigoPais(cca2);
+            }
+        } catch (Exception e) {
+            // Tenta busca parcial como fallback
+            try {
+                String url = "https://restcountries.com/v3.1/name/" + countryName + "?fields=flag,cca2";
+                Object[] response = restTemplate.getForObject(url, Object[].class);
+
+                if (response != null && response.length > 0) {
+                    java.util.Map<String, Object> country = (java.util.Map<String, Object>) response[0];
+                    String flag = (String) country.get("flag");
+                    String cca2 = (String) country.get("cca2");
+
+                    if (flag != null) selecao.setBandeira(flag);
+                    if (cca2 != null) selecao.setCodigoPais(cca2);
+                }
+            } catch (Exception ex) {
+                log.debug("Não foi possível obter dados do país '{}': {}", countryName, ex.getMessage());
+            }
         }
     }
 }
