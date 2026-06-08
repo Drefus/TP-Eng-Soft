@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head th:replace="~{fragments/layout :: head('Painel Admin')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<main>
+    <div class="container">
+        <!-- Header -->
+        <div class="admin-header">
+            <div>
+                <h1 style="display: flex; align-items: center; gap: 0.5rem;">
+                    ⚙️ Painel Administrativo
+                </h1>
+                <p class="text-muted" style="margin-top: 0.25rem;">Gerencie resultados e classificações do evento.</p>
+            </div>
+            <div style="display: flex; gap: 0.75rem; align-items: center;">
+                <span class="badge">🟢 Autenticado</span>
+                <a href="/logout" class="btn btn-outline btn-sm">🚪 Sair</a>
+            </div>
+        </div>
+
+        <!-- Alerts -->
+        <div th:if="${successMsg}" class="alert alert-success">
+            ✅ <span th:text="${successMsg}">Sucesso</span>
+        </div>
+        <div th:if="${errorMsg}" class="alert alert-error">
+            ❌ <span th:text="${errorMsg}">Erro</span>
+        </div>
+
+        <!-- Match List -->
+        <h2 class="section-title mb-2"><span class="icon">📋</span> Atualizar Resultados</h2>
+        <div class="admin-match-list">
+            <div th:each="partida : ${partidas}" class="admin-match-item">
+                <!-- Match Info -->
+                <div class="admin-match-teams">
+                    <span class="match-phase"
+                          th:classappend="'phase-' + ${#strings.toLowerCase(partida.fase)}"
+                          th:text="${partida.fase}" style="font-size: 0.7rem; padding: 2px 8px;">Fase</span>
+                    <span th:text="${#temporals.format(partida.data, 'dd/MM')}" style="color: var(--text-muted); font-size: 0.8rem;"></span>
+                    <span class="flag" th:text="${partida.time1.bandeira}" style="font-size: 1.3rem;">🏳️</span>
+                    <span th:text="${partida.time1.nome}" style="font-weight: 600;">Time 1</span>
+                    <span class="vs" style="color: var(--text-muted);">vs</span>
+                    <span th:text="${partida.time2.nome}" style="font-weight: 600;">Time 2</span>
+                    <span class="flag" th:text="${partida.time2.bandeira}" style="font-size: 1.3rem;">🏳️</span>
+                </div>
+
+                <!-- Form -->
+                <form th:action="@{/admin/resultado}" method="post" class="admin-form">
+                    <input type="hidden" name="partidaId" th:value="${partida.id}">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                    <input type="number" name="golsTime1" min="0" max="99"
+                           th:value="${partida.golsTime1 != null ? partida.golsTime1 : 0}"
+                           placeholder="0">
+                    <span class="vs">×</span>
+                    <input type="number" name="golsTime2" min="0" max="99"
+                           th:value="${partida.golsTime2 != null ? partida.golsTime2 : 0}"
+                           placeholder="0">
+                    <button type="submit" class="btn btn-primary btn-sm">💾 Salvar</button>
+                </form>
+
+                <!-- Status -->
+                <span class="status-badge"
+                      th:classappend="'status-' + ${#strings.toLowerCase(partida.status)}"
+                      th:text="${partida.status == 'FINALIZADA' ? '✅ Finalizada' : '🕐 Agendada'}">
+                    Status
+                </span>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<script src="/js/app.js"></script>
+</body>
+</html>

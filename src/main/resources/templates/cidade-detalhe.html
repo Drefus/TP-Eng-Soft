@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR">
+<head th:replace="~{fragments/layout :: head('Cidade-Sede')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<main>
+    <div class="container">
+        <!-- Header -->
+        <div class="detail-header">
+            <span class="flag-large">🏙️</span>
+            <h1 th:text="${cidade.nome}">Cidade</h1>
+            <p class="meta" th:text="${cidade.pais}">País</p>
+        </div>
+
+        <p th:if="${cidade.descricao != null}" th:text="${cidade.descricao}"
+           style="text-align: center; color: var(--text-secondary); max-width: 700px; margin: 0 auto var(--space-2xl);">
+            Descrição
+        </p>
+
+        <!-- Estádio -->
+        <section th:if="${cidade.estadio != null}" class="mt-2">
+            <h2 class="section-title mb-2"><span class="icon">🏟️</span> Estádio</h2>
+            <div class="card">
+                <div class="card-body">
+                    <div class="detail-grid" style="grid-template-columns: 1fr 1fr;">
+                        <div class="detail-info">
+                            <span style="font-size: 1.5rem;">🏟️</span>
+                            <div>
+                                <div class="label">Nome</div>
+                                <div class="value" th:text="${cidade.estadio.nome}">Estádio</div>
+                            </div>
+                        </div>
+                        <div class="detail-info">
+                            <span style="font-size: 1.5rem;">👥</span>
+                            <div>
+                                <div class="label">Capacidade</div>
+                                <div class="value" th:text="${#numbers.formatInteger(cidade.estadio.capacidade, 1, 'POINT')} + ' lugares'">0 lugares</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hotéis -->
+        <section th:if="${not #lists.isEmpty(cidade.hoteis)}" class="mt-2">
+            <h2 class="section-title mb-2"><span class="icon">🏨</span> Rede Hoteleira</h2>
+            <div class="card-grid" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));">
+                <div th:each="hotel : ${cidade.hoteis}" class="card">
+                    <div class="card-body">
+                        <h4 th:text="${hotel.nome}" style="margin-bottom: 0.5rem;">Hotel</h4>
+                        <div style="margin-bottom: 0.5rem;">
+                            <span th:each="i : ${#numbers.sequence(1, hotel.estrelas)}" style="color: #fbbf24;">★</span>
+                            <span th:each="i : ${#numbers.sequence(hotel.estrelas + 1, 5)}" style="color: var(--text-muted);">★</span>
+                        </div>
+                        <p class="text-muted" th:if="${hotel.endereco != null}" style="font-size: 0.85rem;">
+                            📍 <span th:text="${hotel.endereco}">Endereço</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Aeroportos -->
+        <section th:if="${not #lists.isEmpty(cidade.aeroportos)}" class="mt-2">
+            <h2 class="section-title mb-2"><span class="icon">✈️</span> Aeroportos</h2>
+            <div class="card-grid" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));">
+                <div th:each="aeroporto : ${cidade.aeroportos}" class="card">
+                    <div class="card-body">
+                        <h4 th:text="${aeroporto.nome}" style="margin-bottom: 0.5rem;">Aeroporto</h4>
+                        <p class="text-muted" style="font-size: 0.85rem;">
+                            🏷️ Código IATA: <strong th:text="${aeroporto.codigo}" class="text-accent">XXX</strong>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Partidas na Cidade -->
+        <section th:if="${not #lists.isEmpty(partidas)}" class="mt-3">
+            <h2 class="section-title mb-2"><span class="icon">⚽</span> Partidas nesta cidade</h2>
+            <div class="card-grid">
+                <a th:each="partida : ${partidas}" th:href="@{/partidas/{id}(id=${partida.id})}" class="match-card">
+                    <div class="match-meta">
+                        <span th:text="${#temporals.format(partida.data, 'dd/MM/yyyy')} + ' • ' + ${#temporals.format(partida.horario, 'HH:mm')}"></span>
+                        <span class="match-phase"
+                              th:classappend="'phase-' + ${#strings.toLowerCase(partida.fase)}"
+                              th:text="${partida.fase}">Grupo</span>
+                    </div>
+                    <div class="match-teams">
+                        <div class="match-team">
+                            <span class="flag" th:text="${partida.time1.bandeira}">🏳️</span>
+                            <span class="name" th:text="${partida.time1.nome}">Time 1</span>
+                        </div>
+                        <div class="match-score pending" th:if="${partida.golsTime1 == null}">
+                            <span>— × —</span>
+                        </div>
+                        <div class="match-score" th:unless="${partida.golsTime1 == null}">
+                            <span th:text="${partida.golsTime1}">0</span>
+                            <span class="separator">×</span>
+                            <span th:text="${partida.golsTime2}">0</span>
+                        </div>
+                        <div class="match-team">
+                            <span class="flag" th:text="${partida.time2.bandeira}">🏳️</span>
+                            <span class="name" th:text="${partida.time2.nome}">Time 2</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <div class="mt-2" style="text-align: center;">
+            <a href="/cidades" class="btn btn-outline">← Voltar às cidades</a>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<script src="/js/app.js"></script>
+</body>
+</html>
