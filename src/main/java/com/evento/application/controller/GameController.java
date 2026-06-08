@@ -2,7 +2,6 @@ package com.evento.application.controller;
 
 import com.evento.domain.entity.Partida;
 import com.evento.domain.entity.Selecao;
-import com.evento.domain.entity.CidadeSede;
 import com.evento.domain.service.GameService;
 import com.evento.domain.service.TeamService;
 import com.evento.domain.service.CityService;
@@ -57,7 +56,7 @@ public class GameController {
         }
 
         model.addAttribute("partidas", partidas);
-        model.addAttribute("selecoes", teamService.listarSelecoes());
+        model.addAttribute("selecoes", teamService.listarTodasSelecoes());
         model.addAttribute("cidades", cityService.listarCidades());
         model.addAttribute("dataFiltro", data);
         model.addAttribute("selecaoFiltro", selecaoId);
