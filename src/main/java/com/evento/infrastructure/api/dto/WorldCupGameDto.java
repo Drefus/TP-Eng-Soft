@@ -1,7 +1,9 @@
 package com.evento.infrastructure.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class WorldCupGameDto {
     private String id;
 

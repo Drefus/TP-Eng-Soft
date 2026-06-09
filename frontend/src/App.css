@@ -1,0 +1,74 @@
+/* Estilos específicos do React que complementam o style.css global */
+
+/* Utilitários de margem usados nas páginas */
+.mt-1 { margin-top: var(--space-md); }
+.mt-2 { margin-top: var(--space-xl); }
+.mt-3 { margin-top: var(--space-2xl); }
+.mb-2 { margin-bottom: var(--space-xl); }
+
+.text-muted   { color: var(--text-muted); }
+.text-success { color: var(--success); }
+.text-warning { color: var(--warning); }
+.text-danger  { color: var(--danger); }
+.text-accent  { color: var(--text-accent); }
+.fw-bold      { font-weight: 700; }
+.fw-semibold  { font-weight: 600; }
+
+/* Navbar mobile */
+@media (max-width: 768px) {
+  .navbar-nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: rgba(10, 14, 26, 0.97);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-color);
+    flex-direction: column;
+    padding: var(--space-md);
+    gap: var(--space-xs);
+  }
+
+  .navbar-nav.active {
+    display: flex;
+  }
+
+  .navbar-toggle {
+    display: block;
+  }
+
+  .navbar {
+    position: relative;
+  }
+
+  .match-detail-teams {
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .match-detail-score {
+    font-size: 2.5rem;
+  }
+}
+
+/* Fade-in para cards */
+.match-card,
+.city-card,
+.team-card,
+.stat-card,
+.bracket-match,
+.card {
+  animation: fadeInUp 0.4s ease both;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

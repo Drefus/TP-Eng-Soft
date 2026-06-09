@@ -1,5 +1,6 @@
 package com.evento.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -33,15 +34,17 @@ public class Partida {
     private Integer golsTime2;
 
     @Column(nullable = false)
-    private String fase; // "Grupo", "Oitavas", "Quartas", "Semifinal", "Final"
+    private String fase;
 
     @Column(nullable = false)
-    private String status; // "AGENDADA", "EM_ANDAMENTO", "FINALIZADA"
+    private String status;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "estadio_id")
     private Estadio estadio;
 
+    // Serializa apenas os campos necessários — evita loop CidadeSede → hoteis/aeroportos → CidadeSede
+    @JsonIgnoreProperties({"hoteis", "aeroportos", "descricao", "imagemUrl"})
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cidade_id")
     private CidadeSede cidade;

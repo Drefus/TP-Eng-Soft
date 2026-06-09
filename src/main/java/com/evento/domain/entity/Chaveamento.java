@@ -1,5 +1,6 @@
 package com.evento.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
 @Entity
@@ -11,10 +12,11 @@ public class Chaveamento {
     private Long id;
 
     @Column(nullable = false)
-    private String fase; // "Oitavas", "Quartas", "Semifinal", "Final"
+    private String fase;
 
-    private int ordem; // position in the bracket
+    private int ordem;
 
+    @JsonIgnoreProperties({"hoteis", "aeroportos", "descricao", "imagemUrl"})
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "partida_id")
     private Partida partida;
