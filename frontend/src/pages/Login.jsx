@@ -1,37 +1,33 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 
 export default function Login() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
+  const { login, user } = useAuth()
   const navigate = useNavigate()
+
+  // Se já está logado, redireciona para admin
+  if (user?.admin) {
+    navigate('/admin')
+    return null
+  }
 
   async function handleSubmit(e) {
     e.preventDefault()
     setError(null)
     setLoading(true)
 
-    try {
-      const body = new URLSearchParams({ username, password })
-      const res = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: body.toString(),
-      })
-
-      if (res.ok) {
-        navigate('/admin')
-      } else {
-        const data = await res.json()
-        setError(data.error || 'Login ou senha inválidos!')
-      }
-    } catch {
-      setError('Erro de conexão com o servidor.')
-    } finally {
-      setLoading(false)
+    const result = await login(username, password)
+    if (result.success) {
+      navigate('/admin')
+    } else {
+      setError(result.error)
     }
+    setLoading(false)
   }
 
   return (
@@ -41,9 +37,7 @@ export default function Login() {
         <h2>Área Administrativa</h2>
         <p className="subtitle">Faça login para gerenciar o evento.</p>
 
-        {error && (
-          <div className="alert alert-error">❌ {error}</div>
-        )}
+        {error && <div className="alert alert-error">❌ {error}</div>}
 
         <form onSubmit={handleSubmit} className="login-form">
           <div className="form-group">

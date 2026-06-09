@@ -1,8 +1,10 @@
 import { NavLink } from 'react-router-dom'
 import { useState } from 'react'
+import { useAuth } from '../context/AuthContext'
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
+  const { user } = useAuth()
 
   return (
     <nav className="navbar">
@@ -33,7 +35,15 @@ export default function Navbar() {
             </li>
           ))}
           <li>
-            <NavLink to="/login" className="nav-admin">⚙️ Admin</NavLink>
+            {user?.admin ? (
+              <NavLink to="/admin" className="nav-admin" onClick={() => setOpen(false)}>
+                ⚙️ Admin
+              </NavLink>
+            ) : (
+              <NavLink to="/login" className="nav-admin" onClick={() => setOpen(false)}>
+                🔐 Login
+              </NavLink>
+            )}
           </li>
         </ul>
       </div>

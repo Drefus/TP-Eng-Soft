@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
+import { api } from '../services/api'
 import { formatDate, phaseClass, statusLabel, statusClass } from '../utils/format'
 import Flag from '../components/Flag'
 import Spinner from '../components/Spinner'
@@ -7,39 +9,25 @@ import Spinner from '../components/Spinner'
 export default function Admin() {
   const [partidas, setPartidas] = useState([])
   const [loading, setLoading] = useState(true)
-  const [user, setUser] = useState(null)
   const [successMsg, setSuccessMsg] = useState(null)
   const [errorMsg, setErrorMsg] = useState(null)
+  const { user, logout, checking } = useAuth()
   const navigate = useNavigate()
 
   useEffect(() => {
-    // Verificar autenticação
-    fetch('/api/auth/me')
-      .then(r => r.json())
-      .then(data => {
-        if (!data.authenticated || !data.admin) {
-          navigate('/login')
-        } else {
-          setUser(data.user)
-          loadPartidas()
-        }
-      })
-      .catch(() => navigate('/login'))
-  }, [navigate])
+    if (checking) return
+    if (!user?.admin) {
+      navigate('/login')
+      return
+    }
+    loadPartidas()
+  }, [user, checking, navigate])
 
   function loadPartidas() {
     setLoading(true)
-    fetch('/api/admin/painel')
-      .then(r => {
-        if (r.status === 401 || r.status === 403) {
-          navigate('/login')
-          return null
-        }
-        return r.json()
-      })
-      .then(data => {
-        if (data) setPartidas(data.partidas || [])
-      })
+    api.adminPainel()
+      .then(data => setPartidas(data.partidas || []))
+      .catch(() => navigate('/login'))
       .finally(() => setLoading(false))
   }
 
@@ -47,12 +35,7 @@ export default function Admin() {
     setSuccessMsg(null)
     setErrorMsg(null)
 
-    const res = await fetch('/api/admin/resultado', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ partidaId, golsTime1, golsTime2 }),
-    })
-
+    const res = await api.adminResultado({ partidaId, golsTime1, golsTime2 })
     const data = await res.json()
     if (res.ok) {
       setSuccessMsg(data.status)
@@ -60,16 +43,15 @@ export default function Admin() {
     } else {
       setErrorMsg(data.error || 'Erro ao salvar')
     }
-
     setTimeout(() => { setSuccessMsg(null); setErrorMsg(null) }, 4000)
   }
 
   async function handleLogout() {
-    await fetch('/api/logout', { method: 'POST' })
+    await logout()
     navigate('/login')
   }
 
-  if (loading) return <Spinner />
+  if (checking || loading) return <Spinner />
 
   return (
     <>
@@ -92,7 +74,7 @@ export default function Admin() {
             fontSize: '0.8rem',
             fontWeight: 600
           }}>
-            🟢 {user}
+            🟢 {user?.name}
           </span>
           <button onClick={handleLogout} className="btn btn-outline btn-sm">🚪 Sair</button>
         </div>
